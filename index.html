@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prabhav Jani Week 03</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script> -->
+</head>
+<body>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <label for="">Title</label>
+                <input type="text" name="title" id="title">
+            </div>
+            <div class="col-xs-12">
+                <label for="">Author</label>
+                <input type="text" name="author" id="author">
+            </div>
+            <div class="col-xs-12">
+                <button 
+                type="button" 
+                onclick="sendPost();"
+                class="btn btn-success">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col xs-12" id="list">
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+
+    <script>
+        function sendPost(){
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            // const req = {
+            //     title: t,
+            //     author: a
+            // }
+            //  or
+            const req = {
+                title,
+                author
+            }
+            axios.post('http://localhost:3004/posts',req)
+            .then( response => {
+                console.log(response);
+                document.getElementById('title').value = '';
+                document.getElementById('title').focus();
+                document.getElementById('author').value = "";
+                getPosts();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
+
+        function getPosts(){
+            axios.get('http://localhost:3004/posts')
+            .then(function(response){
+                const list = document.getElementById('list');
+                if (response && response.data){
+                    list.innerHTML = "";
+                    response.data.forEach(post => {
+                        list.innerHTML += '<br>' + post.title + ' :: ' +post.author;
+                    });
+                }
+            })
+            .catch(error =>{
+                console.log(error);
+            });
+        }
+
+        getPosts();
+    </script>
+
+</body>
+</html>
